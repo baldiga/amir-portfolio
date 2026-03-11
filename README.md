@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Amir Baldiga - Personal Portfolio
+
+A Next.js website with Sanity CMS integration for Amir Baldiga's personal portfolio.
+
+## Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **CMS**: Sanity v3 (embedded Studio at `/studio`)
+- **Styling**: Tailwind CSS + Custom CSS Variables
+- **Animations**: Framer Motion
+- **Fonts**: Sora, Inter, JetBrains Mono, Heebo, Rubik
+- **Language**: TypeScript
+
+## Design System
+
+- **Accent**: Terracotta (#C45D3E)
+- **Background**: Warm Cream (#FAF9F6)
+- **Foreground**: Ink (#1A1A1A)
+
+## Pages
+
+- `/` - Homepage (Hero, Bento Grid, Toolkit, Case Studies, Experience, Blog, CTA)
+- `/build` - Build page (placeholder)
+- `/magazine` - Magazine page (placeholder)
+- `/contact` - Contact page (placeholder)
+- `/studio` - Sanity Studio (CMS admin)
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env.local` file:
 
-## Learn More
+```
+NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_TOKEN=your_token
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Sanity Studio
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Access the embedded Sanity Studio at `/studio` to manage all content.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Seeding Data
 
-## Deploy on Vercel
+To seed Sanity with initial content:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+node scripts/seed.mjs
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+
+Deploy to Vercel:
+
+```bash
+vercel --yes
+```
+
+Or connect the GitHub repo to Vercel for automatic deployments.
