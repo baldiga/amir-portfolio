@@ -12,7 +12,7 @@ const sanity = createClient({
   projectId: 'jgfn3h3h',
   dataset: 'production',
   apiVersion: '2024-01-01',
-  token: 'sk23g8L12Ul6rfwkFsT9FjVAEHJZO0PXTG4WbjZsH5I3Wrelu8CVYX5B2RzP9tagx410N3pvU4iau3tOr3wPH8sfTghX04sI5XFqO1xNQ6d6ojy46tzwXLOESyl0Puc6k7GOSsnL7NqQq3awLlQP4v4qK7vhhiQcIbDZnyoZuNaMuCuFI3BP',
+  token: process.env.SANITY_API_TOKEN, // Set via: SANITY_API_TOKEN=sk... node scripts/migrate-wp-to-sanity.mjs
   useCdn: false,
 });
 

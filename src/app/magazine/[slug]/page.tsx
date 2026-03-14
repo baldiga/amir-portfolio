@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import { getBlogPostBySlug, getAllBlogPostSlugs } from '@/lib/sanity-fetch';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Clock, Calendar, ChevronDown, ExternalLink, Mail } from 'lucide-react';
+import { ArrowLeft, Clock, Calendar, ExternalLink, Mail } from 'lucide-react';
 import ArticleContent from '@/components/ArticleContent';
 import ArticleFaq from '@/components/ArticleFaq';
 
@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
-function ArticleCta({ title }: { title: string }) {
+function ArticleCta() {
   return (
     <div
       className="rounded-2xl p-8 my-10 flex flex-col md:flex-row items-center justify-between gap-6"
@@ -179,7 +179,7 @@ export default async function ArticlePage({ params }: PageProps) {
       <div className="max-w-4xl mx-auto px-6 py-12">
 
         {/* Top CTA */}
-        <ArticleCta title={post.title} />
+        <ArticleCta />
 
         {/* Tags */}
         {post.tags && post.tags.length > 0 && (
@@ -216,7 +216,7 @@ export default async function ArticlePage({ params }: PageProps) {
         </article>
 
         {/* Bottom CTA — same as top */}
-        <ArticleCta title={post.title} />
+        <ArticleCta />
 
         {/* Navigation */}
         <div className="flex items-center justify-between pt-8 mt-8" style={{ borderTop: '1px solid var(--border)' }}>

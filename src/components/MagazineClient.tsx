@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Calendar, ArrowRight, Bot } from 'lucide-react';
+import { Clock, ArrowRight, Bot } from 'lucide-react';
 
 interface Post {
   _id: string;
@@ -175,7 +175,7 @@ export default function MagazineClient({ posts }: { posts: Post[] }) {
   const [selectedCategory, setSelectedCategory] = useState('הכל');
 
   const categories = useMemo(() => {
-    const cats = Array.from(new Set(posts.map((p) => p.category).filter(Boolean)));
+    const cats = Array.from(new Set(posts.map((p) => p.category).filter((c): c is string => Boolean(c))));
     return ['הכל', ...cats];
   }, [posts]);
 
