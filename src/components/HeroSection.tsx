@@ -2,18 +2,19 @@
 
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import AnimatedHeroBg from './AnimatedHeroBg';
 
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+    transition: { staggerChildren: 0.12, delayChildren: 0.3 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1] } },
 };
 
 interface HeroProps {
@@ -32,8 +33,9 @@ interface HeroProps {
 
 export default function HeroSection({ eyebrow, heading, description, ctaButtons, profileImageUrl }: HeroProps) {
   return (
-    <section className="h-screen flex items-center pt-24">
-      <div className="max-w-7xl mx-auto px-6 w-full">
+    <section className="h-screen flex items-center pt-24 relative overflow-hidden">
+      <AnimatedHeroBg />
+      <div className="max-w-7xl mx-auto px-6 w-full relative" style={{ zIndex: 1 }}>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-center">
           <motion.div className="md:col-span-2" variants={containerVariants} initial="hidden" animate="visible">
             <motion.div
@@ -76,22 +78,47 @@ export default function HeroSection({ eyebrow, heading, description, ctaButtons,
           <motion.div className="md:col-span-1 relative" variants={itemVariants} initial="hidden" animate="visible">
             <div className="relative">
               <div
+                className="absolute -inset-4 blur-2xl opacity-30 pointer-events-none"
+                style={{
+                  background: 'radial-gradient(ellipse at center, rgba(196, 93, 62, 0.3) 0%, transparent 70%)',
+                  clipPath: 'polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%)',
+                }}
+              />
+              <div
                 className="absolute -bottom-6 -right-6 w-full h-full border-2"
                 style={{
-                  borderColor: 'rgba(196, 93, 62, 0.3)',
+                  borderColor: 'rgba(196, 93, 62, 0.35)',
+                  clipPath: 'polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%)',
+                  boxShadow: '4px 4px 24px rgba(196, 93, 62, 0.1)',
+                }}
+              />
+              <div
+                className="absolute -bottom-3 -right-3 w-full h-full border"
+                style={{
+                  borderColor: 'rgba(196, 93, 62, 0.15)',
                   clipPath: 'polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%)',
                 }}
               />
               <img
                 src={profileImageUrl || '/amir-profile.jpg'}
                 alt="Amir Baldiga"
-                className="w-full"
-                style={{ clipPath: 'polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%)' }}
+                className="w-full relative"
+                style={{
+                  clipPath: 'polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%)',
+                  filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.12))',
+                }}
               />
             </div>
           </motion.div>
         </div>
       </div>
+      <div
+        className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
+        style={{
+          background: 'linear-gradient(to bottom, transparent, var(--background))',
+          zIndex: 2,
+        }}
+      />
     </section>
   );
 }
