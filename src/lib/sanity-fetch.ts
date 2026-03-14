@@ -4,6 +4,7 @@ import {
   bentoCardsQuery,
   skillsQuery,
   caseStudiesQuery,
+  caseStudyBySlugQuery,
   experienceQuery,
   blogPostsQuery,
   ctaSectionQuery,
@@ -63,4 +64,27 @@ export async function getCtaSection() {
 
 export async function getSiteSettings() {
   return safeFetch(siteSettingsQuery, fallbackSiteSettings);
+}
+
+export async function getCaseStudyBySlug(slug: string) {
+  try {
+    const data = await client.fetch(caseStudyBySlugQuery, { slug }, { next: { revalidate: 60 } });
+    return data || null;
+  } catch (error) {
+    console.error('Sanity fetch error:', error);
+    return null;
+  }
+}
+
+export async function getAllCaseStudySlugs(): Promise<string[]> {
+  try {
+    const data = await client.fetch(
+      `*[_type == "caseStudy" && defined(slug.current)].slug.current`,
+      {},
+      { next: { revalidate: 60 } }
+    );
+    return data || [];
+  } catch {
+    return [];
+  }
 }

@@ -39,7 +39,27 @@ export const caseStudiesQuery = groq`*[_type == "caseStudy"] | order(order asc){
   subtitle,
   description,
   result,
-  order
+  order,
+  link,
+  slug,
+  icon,
+  featured,
+  tags
+}`;
+
+export const caseStudyBySlugQuery = groq`*[_type == "caseStudy" && slug.current == $slug][0]{
+  _id,
+  category,
+  title,
+  subtitle,
+  description,
+  result,
+  order,
+  link,
+  slug,
+  icon,
+  featured,
+  tags
 }`;
 
 export const experienceQuery = groq`*[_type == "experience"] | order(order asc){
