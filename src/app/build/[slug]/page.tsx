@@ -3,6 +3,11 @@ import { getCaseStudyBySlug, getAllCaseStudySlugs } from '@/lib/sanity-fetch';
 import Link from 'next/link';
 import { ArrowLeft, ExternalLink, Bot, Tag } from 'lucide-react';
 
+// Allow dynamic rendering for slugs not pre-generated at build time
+export const dynamicParams = true;
+// Always re-fetch fresh data (no stale 404s from CDN)
+export const revalidate = 0;
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }

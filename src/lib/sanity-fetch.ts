@@ -68,7 +68,8 @@ export async function getSiteSettings() {
 
 export async function getCaseStudyBySlug(slug: string) {
   try {
-    const data = await client.fetch(caseStudyBySlugQuery, { slug }, { next: { revalidate: 60 } });
+    // Use no-cache to bypass CDN and always get fresh data for project pages
+    const data = await client.fetch(caseStudyBySlugQuery, { slug }, { cache: 'no-store' });
     return data || null;
   } catch (error) {
     console.error('Sanity fetch error:', error);
