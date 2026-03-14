@@ -71,17 +71,42 @@ export const experienceQuery = groq`*[_type == "experience"] | order(order asc){
   order
 }`;
 
-export const blogPostsQuery = groq`*[_type == "blogPost"] | order(order asc){
+export const blogPostsQuery = groq`*[_type == "blogPost"] | order(publishedAt desc){
   _id,
   title,
   excerpt,
+  featuredImageUrl,
   image,
   category,
   featured,
   slug,
-  content,
+  publishedAt,
+  readingTime,
+  tags,
   order
 }`;
+
+export const blogPostBySlugQuery = groq`*[_type == "blogPost" && slug.current == $slug][0]{
+  _id,
+  title,
+  excerpt,
+  featuredImageUrl,
+  image,
+  category,
+  featured,
+  slug,
+  wpSlug,
+  publishedAt,
+  readingTime,
+  rawHtml,
+  content,
+  faq,
+  tags,
+  metaDescription,
+  order
+}`;
+
+export const allBlogPostSlugsQuery = groq`*[_type == "blogPost" && defined(slug.current)].slug.current`;
 
 export const ctaSectionQuery = groq`*[_type == "ctaSection"][0]{
   eyebrow,

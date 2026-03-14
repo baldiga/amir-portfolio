@@ -128,7 +128,12 @@ function BentoCard({
   index: number;
 }) {
   const isAI = cs.category === AI_CATEGORY;
-  const href = cs.slug?.current ? `/build/${cs.slug.current}` : cs.link || null;
+  // AI Projects always go to the magazine article page (no intermediate /build/[slug])
+  const href = isAI && cs.slug?.current
+    ? `/magazine/${cs.slug.current}`
+    : cs.slug?.current
+    ? `/magazine/${cs.slug.current}`
+    : cs.link || null;
   const isInternal = !!cs.slug?.current;
 
   const sizeClasses: Record<string, string> = {

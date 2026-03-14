@@ -8,6 +8,8 @@ import {
   caseStudyBySlugQuery,
   experienceQuery,
   blogPostsQuery,
+  blogPostBySlugQuery,
+  allBlogPostSlugsQuery,
   ctaSectionQuery,
   siteSettingsQuery,
 } from '@/sanity/lib/queries';
@@ -64,7 +66,33 @@ export async function getExperience() {
 }
 
 export async function getBlogPosts() {
-  return safeFetch(blogPostsQuery, fallbackBlogPosts);
+  try {
+    const data = await freshClient.fetch(blogPostsQuery);
+    if (!data || data.length === 0) return fallbackBlogPosts;
+    return data;
+  } catch (error) {
+    console.error('Sanity fetch error [getBlogPosts]:', error);
+    return fallbackBlogPosts;
+  }
+}
+
+export async function getBlogPostBySlug(slug: string) {
+  try {
+    const data = await freshClient.fetch(blogPostBySlugQuery, { slug });
+    return data || null;
+  } catch (error) {
+    console.error('Sanity fetch error [getBlogPostBySlug]:', error);
+    return null;
+  }
+}
+
+export async function getAllBlogPostSlugs(): Promise<string[]> {
+  try {
+    const data = await freshClient.fetch(allBlogPostSlugsQuery);
+    return data || [];
+  } catch {
+    return [];
+  }
 }
 
 export async function getCtaSection() {

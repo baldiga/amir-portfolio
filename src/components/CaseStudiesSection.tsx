@@ -25,8 +25,9 @@ const AI_CATEGORY = 'AI Projects';
 function CaseStudyCard({ cs, i }: { cs: CaseStudy; i: number }) {
   const isAI = cs.category === AI_CATEGORY;
 
+  // All projects with a slug go directly to the magazine article page
   const href = cs.slug?.current
-    ? `/build/${cs.slug.current}`
+    ? `/magazine/${cs.slug.current}`
     : cs.link || null;
 
   return (
