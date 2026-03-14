@@ -1,4 +1,14 @@
-import { client, writeClient } from '@/sanity/lib/client';
+import { createClient } from 'next-sanity';
+import { client } from '@/sanity/lib/client';
+
+// Dedicated no-CDN read client — bypasses Sanity CDN for always-fresh data
+// Does NOT require a token since the dataset is public
+const freshClient = createClient({
+  projectId: 'jgfn3h3h',
+  dataset: 'production',
+  apiVersion: '2024-01-01',
+  useCdn: false,
+});
 import {
   heroQuery,
   bentoCardsQuery,
@@ -68,19 +78,17 @@ export async function getSiteSettings() {
 
 export async function getCaseStudyBySlug(slug: string) {
   try {
-    // Use writeClient (useCdn: false) to bypass CDN — ensures new documents are always found
-    const data = await writeClient.fetch(caseStudyBySlugQuery, { slug });
+    const data = await freshClient.fetch(caseStudyBySlugQuery, { slug });
     return data || null;
   } catch (error) {
-    console.error('Sanity fetch error:', error);
+    console.error('Sanity fetch error [getCaseStudyBySlug]:', error);
     return null;
   }
 }
 
 export async function getAllCaseStudySlugs(): Promise<string[]> {
   try {
-    // Also bypass CDN here so generateStaticParams always gets fresh slugs
-    const data = await writeClient.fetch(
+    const data = await freshClient.fetch(
       `*[_type == "caseStudy" && defined(slug.current)].slug.current`
     );
     return data || [];
