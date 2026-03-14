@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import CustomCursor from '@/components/CustomCursor';
 import TransparencyBar from '@/components/TransparencyBar';
 import NoiseOverlay from '@/components/NoiseOverlay';
+import LenisProvider from '@/components/LenisProvider';
 import { getSiteSettings } from '@/lib/sanity-fetch';
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -43,12 +44,14 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-screen overflow-x-hidden" style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
-        <NoiseOverlay />
-        <TransparencyBar />
-        <CustomCursor />
-        <Navbar />
-        <main className="relative z-10">{children}</main>
-        <Footer socialLinks={settings.socialLinks} />
+        <LenisProvider>
+          <NoiseOverlay />
+          <TransparencyBar />
+          <CustomCursor />
+          <Navbar />
+          <main className="relative z-10">{children}</main>
+          <Footer socialLinks={settings.socialLinks} />
+        </LenisProvider>
       </body>
     </html>
   );
