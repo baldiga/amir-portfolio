@@ -1,4 +1,4 @@
-import { client } from '@/sanity/lib/client';
+import { client, writeClient } from '@/sanity/lib/client';
 import {
   heroQuery,
   bentoCardsQuery,
@@ -68,8 +68,8 @@ export async function getSiteSettings() {
 
 export async function getCaseStudyBySlug(slug: string) {
   try {
-    // Use no-cache to bypass CDN and always get fresh data for project pages
-    const data = await client.fetch(caseStudyBySlugQuery, { slug }, { cache: 'no-store' });
+    // Use writeClient (useCdn: false) to bypass CDN — ensures new documents are always found
+    const data = await writeClient.fetch(caseStudyBySlugQuery, { slug });
     return data || null;
   } catch (error) {
     console.error('Sanity fetch error:', error);
@@ -79,10 +79,9 @@ export async function getCaseStudyBySlug(slug: string) {
 
 export async function getAllCaseStudySlugs(): Promise<string[]> {
   try {
-    const data = await client.fetch(
-      `*[_type == "caseStudy" && defined(slug.current)].slug.current`,
-      {},
-      { next: { revalidate: 60 } }
+    // Also bypass CDN here so generateStaticParams always gets fresh slugs
+    const data = await writeClient.fetch(
+      `*[_type == "caseStudy" && defined(slug.current)].slug.current`
     );
     return data || [];
   } catch {
