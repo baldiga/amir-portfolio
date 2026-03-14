@@ -14,7 +14,7 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, y: 24 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1] } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.9, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] } },
 };
 
 interface HeroProps {
@@ -77,6 +77,7 @@ export default function HeroSection({ eyebrow, heading, description, ctaButtons,
           </motion.div>
           <motion.div className="md:col-span-1 relative" variants={itemVariants} initial="hidden" animate="visible">
             <div className="relative">
+              {/* Outer glow ring */}
               <div
                 className="absolute -inset-4 blur-2xl opacity-30 pointer-events-none"
                 style={{
@@ -84,6 +85,7 @@ export default function HeroSection({ eyebrow, heading, description, ctaButtons,
                   clipPath: 'polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%)',
                 }}
               />
+              {/* Depth back layer */}
               <div
                 className="absolute -bottom-6 -right-6 w-full h-full border-2"
                 style={{
@@ -92,6 +94,7 @@ export default function HeroSection({ eyebrow, heading, description, ctaButtons,
                   boxShadow: '4px 4px 24px rgba(196, 93, 62, 0.1)',
                 }}
               />
+              {/* Inner depth layer */}
               <div
                 className="absolute -bottom-3 -right-3 w-full h-full border"
                 style={{
@@ -112,6 +115,8 @@ export default function HeroSection({ eyebrow, heading, description, ctaButtons,
           </motion.div>
         </div>
       </div>
+
+      {/* Bottom fade */}
       <div
         className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
         style={{
