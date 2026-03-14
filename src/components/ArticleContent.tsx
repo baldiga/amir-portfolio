@@ -1,12 +1,19 @@
 'use client';
 
-import DOMPurify from 'isomorphic-dompurify';
+import { useEffect, useRef, useState } from 'react';
 
 interface Props {
   rawHtml?: string;
 }
 
 export default function ArticleContent({ rawHtml }: Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   if (!rawHtml) {
     return (
       <p style={{ color: 'var(--muted-foreground)' }}>
@@ -15,8 +22,10 @@ export default function ArticleContent({ rawHtml }: Props) {
     );
   }
 
-  const clean = DOMPurify.sanitize(rawHtml, {
-    ALLOWED_TAGS: [
+  // Sanitize on the client side only using DOMParser
+  const sanitizeHtml = (html: string): string => {
+    if (typeof window === 'undefined') return '';
+    const allowedTags = new Set([
       'p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'del',
       'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
       'ul', 'ol', 'li',
@@ -25,13 +34,42 @@ export default function ArticleContent({ rawHtml }: Props) {
       'table', 'thead', 'tbody', 'tr', 'th', 'td',
       'div', 'span', 'figure', 'figcaption',
       'hr', 'section', 'article',
-    ],
-    ALLOWED_ATTR: [
+    ]);
+    const allowedAttrs = new Set([
       'href', 'src', 'alt', 'title', 'class', 'id',
       'target', 'rel', 'width', 'height', 'style',
-    ],
-    FORCE_BODY: true,
-  });
+    ]);
+
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+
+    function cleanNode(node: Element) {
+      const children = Array.from(node.children);
+      for (const child of children) {
+        if (!allowedTags.has(child.tagName.toLowerCase())) {
+          // Replace disallowed tags with their text content
+          const text = document.createTextNode(child.textContent || '');
+          child.replaceWith(text);
+        } else {
+          // Remove disallowed attributes
+          const attrs = Array.from(child.attributes);
+          for (const attr of attrs) {
+            if (!allowedAttrs.has(attr.name)) {
+              child.removeAttribute(attr.name);
+            }
+          }
+          // Add safety attrs for links
+          if (child.tagName === 'A') {
+            child.setAttribute('rel', 'noopener noreferrer');
+          }
+          cleanNode(child);
+        }
+      }
+    }
+
+    cleanNode(doc.body);
+    return doc.body.innerHTML;
+  };
 
   return (
     <>
@@ -141,7 +179,6 @@ export default function ArticleContent({ rawHtml }: Props) {
           color: var(--muted-foreground);
           margin-top: 0.5rem;
         }
-        /* WordPress-specific class overrides */
         .article-body .wp-block-image,
         .article-body .wp-block-embed { margin: 2rem 0; }
         .article-body .has-text-align-center { text-align: center; }
@@ -154,8 +191,9 @@ export default function ArticleContent({ rawHtml }: Props) {
         }
       `}</style>
       <div
+        ref={containerRef}
         className="article-body"
-        dangerouslySetInnerHTML={{ __html: clean }}
+        dangerouslySetInnerHTML={{ __html: mounted ? sanitizeHtml(rawHtml) : '' }}
       />
     </>
   );
