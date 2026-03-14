@@ -43,12 +43,12 @@ export default async function ProjectPage({ params }: PageProps) {
       {/* Back nav */}
       <div className="max-w-4xl mx-auto px-6 pt-32 pb-6">
         <Link
-          href="/#case-studies"
+          href="/build"
           className="inline-flex items-center gap-2 font-mono text-xs tracking-wider uppercase transition-opacity duration-200 opacity-60 hover:opacity-100"
           style={{ color: 'var(--foreground)' }}
         >
           <ArrowLeft size={14} />
-          Back to Portfolio
+          Back to Build Lab
         </Link>
       </div>
 
@@ -156,7 +156,7 @@ export default async function ProjectPage({ params }: PageProps) {
             </a>
           )}
           <Link
-            href="/#case-studies"
+            href="/build"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-mono text-sm font-semibold border transition-all duration-200 hover:opacity-70"
             style={{
               borderColor: 'var(--border)',

@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useMemo } from 'react';
 import { ExternalLink, ArrowRight, Bot } from 'lucide-react';
+import Link from 'next/link';
 
 interface CaseStudy {
   _id: string;
@@ -164,6 +165,13 @@ export default function CaseStudiesSection({ caseStudies }: { caseStudies: CaseS
             03 —
           </span>
           <h2 className="font-heading text-4xl md:text-5xl font-semibold mt-2">Case Studies</h2>
+          <Link
+            href="/build"
+            className="inline-flex items-center gap-2 mt-4 font-mono text-xs tracking-wider uppercase transition-all duration-200 opacity-60 hover:opacity-100"
+            style={{ color: 'var(--accent)' }}
+          >
+            View All in Build Lab <ArrowRight size={12} />
+          </Link>
         </motion.div>
 
         {/* Filter Pills */}
