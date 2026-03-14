@@ -11,6 +11,7 @@ type FormState = 'idle' | 'sending' | 'success' | 'error';
 export default function ContactClient() {
   const [formState, setFormState] = useState<FormState>('idle');
   const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [consent, setConsent] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -29,6 +30,7 @@ export default function ContactClient() {
           name: form.name,
           email: form.email,
           message: form.message,
+          consent,
           source: 'amirbaldiga.com/contact',
           timestamp: new Date().toISOString(),
         }),
@@ -257,6 +259,20 @@ export default function ContactClient() {
                     </div>
                   )}
 
+                  {/* Consent checkbox */}
+                  <label className="flex items-start gap-3 cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={consent}
+                      onChange={(e) => setConsent(e.target.checked)}
+                      className="mt-1 w-4 h-4 rounded border-2 accent-[#191C70] cursor-pointer flex-shrink-0"
+                      style={{ borderColor: 'var(--border)' }}
+                    />
+                    <span className="text-sm" style={{ color: 'var(--muted-foreground)' }}>
+                      אני מאשר/ת קבלת דיוור מאמיר בלדיגה
+                    </span>
+                  </label>
+
                   <button
                     type="submit"
                     disabled={formState === 'sending'}
@@ -276,10 +292,6 @@ export default function ContactClient() {
                       </>
                     )}
                   </button>
-
-                  <p className="text-center font-mono text-xs" style={{ color: 'var(--muted-foreground)' }}>
-                    על ידי שליחה, אני מסכים לקבל תגובה ממיר בלדיגה.
-                  </p>
                 </form>
               )}
             </div>

@@ -1,6 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Link from 'next/link';
+import Image from 'next/image';
 import { urlFor } from '@/sanity/lib/image';
 
 interface BlogPost {
@@ -10,23 +12,24 @@ interface BlogPost {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   image?: any;
   imageUrl?: string;
+  featuredImageUrl?: string;
   category: string;
   featured: boolean;
   order: number;
+  slug?: { current: string };
 }
 
 function getImageUrl(post: BlogPost): string {
-  if (post.image?.asset) {
-    return urlFor(post.image).width(600).url();
-  }
-  return post.imageUrl || 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=600&q=80';
+  if (post.featuredImageUrl) return post.featuredImageUrl;
+  if (post.image?.asset) return urlFor(post.image).width(800).url();
+  return post.imageUrl || 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80';
 }
 
 export default function BlogSection({ posts }: { posts: BlogPost[] }) {
-  const featuredPost = posts.find((p) => p.featured) || posts[0];
-  const otherPosts = posts.filter((p) => p._id !== featuredPost?._id);
+  // Show max 3 latest posts
+  const latestPosts = posts.slice(0, 3);
 
-  if (!featuredPost) return null;
+  if (latestPosts.length === 0) return null;
 
   return (
     <section className="py-32 border-t" style={{ borderColor: 'var(--border)' }}>
@@ -43,75 +46,72 @@ export default function BlogSection({ posts }: { posts: BlogPost[] }) {
           <h2 className="font-heading text-4xl md:text-5xl font-semibold mt-2">Latest Thinking</h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Featured Post */}
-          <motion.article
-            className="md:col-span-1"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <div className="mb-6 overflow-hidden rounded-lg">
-              <img
-                src={getImageUrl(featuredPost)}
-                alt={featuredPost.title}
-                className="w-full h-64 object-cover hover:scale-105 transition-transform duration-500"
-              />
-            </div>
-            <span className="font-mono text-xs tracking-wider uppercase" style={{ color: 'var(--accent)' }}>
-              {featuredPost.category}
-            </span>
-            <h3 className="font-heading text-2xl font-semibold mt-4 mb-3 group">
-              <span className="relative inline-block">
-                {featuredPost.title}
-                <span
-                  className="absolute bottom-0 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300"
-                  style={{ backgroundColor: 'var(--accent)' }}
-                />
-              </span>
-            </h3>
-            <p className="mb-4" style={{ color: 'var(--muted-foreground)' }}>
-              {featuredPost.excerpt}
-            </p>
-            <a href="#" className="font-mono text-xs transition-colors" style={{ color: 'var(--accent)' }}>
-              Read More &rarr;
-            </a>
-          </motion.article>
-
-          {/* Other Posts */}
-          <div className="space-y-8">
-            {otherPosts.map((post, i) => (
-              <motion.article
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {latestPosts.map((post, i) => {
+            const href = post.slug?.current ? `/magazine/${post.slug.current}` : '#';
+            return (
+              <motion.div
                 key={post._id}
-                className="flex gap-6 group"
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
               >
-                <img
-                  src={getImageUrl(post)}
-                  alt={post.title}
-                  className="w-24 h-24 object-cover rounded-lg flex-shrink-0 hover:scale-105 transition-transform duration-300"
-                />
-                <div>
-                  <span className="font-mono text-xs tracking-wider uppercase" style={{ color: 'var(--accent)' }}>
-                    {post.category}
-                  </span>
-                  <h4 className="font-heading text-lg font-semibold mt-2 mb-2 relative inline-block">
-                    {post.title}
-                    <span
-                      className="absolute bottom-0 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300"
-                      style={{ backgroundColor: 'var(--accent)' }}
+                <Link href={href} className="block group">
+                  <div
+                    className="relative rounded-2xl overflow-hidden"
+                    style={{ height: 340 }}
+                  >
+                    <Image
+                      src={getImageUrl(post)}
+                      alt={post.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 33vw"
                     />
-                  </h4>
-                  <p className="text-sm line-clamp-2" style={{ color: 'var(--muted-foreground)' }}>
-                    {post.excerpt}
-                  </p>
-                </div>
-              </motion.article>
-            ))}
-          </div>
+                    {/* Dark overlay */}
+                    <div
+                      style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: 'linear-gradient(to top, rgba(10,10,40,0.85) 0%, rgba(10,10,40,0.2) 60%)',
+                      }}
+                    />
+                    {/* Title overlay */}
+                    <div className="absolute bottom-0 left-0 right-0 p-6" dir="rtl">
+                      <span
+                        className="font-mono text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-full mb-3 inline-block"
+                        style={{
+                          backgroundColor: 'rgba(255,255,255,0.12)',
+                          color: 'rgba(255,255,255,0.8)',
+                          backdropFilter: 'blur(8px)',
+                        }}
+                      >
+                        {post.category}
+                      </span>
+                      <h3
+                        className="font-heading text-lg font-semibold text-white leading-snug"
+                        style={{ textAlign: 'right' }}
+                      >
+                        {post.title}
+                      </h3>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* View all link */}
+        <div className="text-center mt-10">
+          <Link
+            href="/magazine"
+            className="font-mono text-sm transition-colors hover:opacity-80 inline-flex items-center gap-2"
+            style={{ color: 'var(--accent)' }}
+          >
+            View All Articles &rarr;
+          </Link>
         </div>
       </div>
     </section>

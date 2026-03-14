@@ -12,8 +12,8 @@ interface Skill {
 
 const floatingVariants = (delay: number, duration: number) => ({
   animate: {
-    y: [0, -20, 0],
-    x: [0, Math.random() * 10 - 5, 0],
+    y: [0, -14, 0],
+    x: [0, Math.random() * 8 - 4, 0],
     transition: {
       duration,
       delay,
@@ -25,13 +25,13 @@ const floatingVariants = (delay: number, duration: number) => ({
 const getBubbleSize = (size: string) => {
   switch (size) {
     case 'large':
-      return 'w-24 h-24 text-base';
+      return { className: 'text-xs', minW: 110, minH: 110 };
     case 'medium':
-      return 'w-20 h-20 text-sm';
+      return { className: 'text-xs', minW: 95, minH: 95 };
     case 'small':
-      return 'w-16 h-16 text-xs';
+      return { className: 'text-[11px]', minW: 80, minH: 80 };
     default:
-      return 'w-20 h-20 text-sm';
+      return { className: 'text-xs', minW: 95, minH: 95 };
   }
 };
 
@@ -56,54 +56,66 @@ export default function ToolkitSection({ skills }: { skills: Skill[] }) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
           {/* AI Skills */}
-          <div className="relative h-96 flex items-center justify-center">
-            <div className="relative w-full h-full flex flex-wrap gap-4 items-center justify-center content-center">
-              {aiSkills.map((skill, i) => (
-                <motion.div
-                  key={skill._id}
-                  className={`${getBubbleSize(skill.size)} flex items-center justify-center text-center p-2 rounded-full border transition-all duration-300 group cursor-pointer overflow-hidden`}
-                  style={{
-                    backgroundColor: 'rgba(196, 93, 62, 0.1)',
-                    borderColor: 'rgba(196, 93, 62, 0.3)',
-                  }}
-                  variants={floatingVariants(i * 0.1, 3 + Math.random() * 2)}
-                  animate="animate"
-                  whileHover={{ scale: 1.1, borderColor: 'rgba(196, 93, 62, 0.7)' }}
-                >
-                  <span
-                    className="font-mono text-xs font-semibold transition-colors leading-tight"
-                    style={{ color: 'var(--accent)', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+          <div className="relative flex items-center justify-center" style={{ minHeight: 420 }}>
+            <div className="relative w-full flex flex-wrap gap-4 items-center justify-center content-center py-4">
+              {aiSkills.map((skill, i) => {
+                const bubble = getBubbleSize(skill.size);
+                return (
+                  <motion.div
+                    key={skill._id}
+                    className="flex items-center justify-center text-center rounded-full border transition-all duration-300 cursor-pointer"
+                    style={{
+                      minWidth: bubble.minW,
+                      minHeight: bubble.minH,
+                      padding: '12px 10px',
+                      backgroundColor: 'rgba(196, 93, 62, 0.1)',
+                      borderColor: 'rgba(196, 93, 62, 0.3)',
+                    }}
+                    variants={floatingVariants(i * 0.1, 3 + Math.random() * 2)}
+                    animate="animate"
+                    whileHover={{ scale: 1.1, borderColor: 'rgba(196, 93, 62, 0.7)' }}
                   >
-                    {skill.name}
-                  </span>
-                </motion.div>
-              ))}
+                    <span
+                      className={`font-mono ${bubble.className} font-semibold transition-colors leading-tight text-center`}
+                      style={{ color: 'var(--accent)', wordBreak: 'break-word', hyphens: 'auto' }}
+                    >
+                      {skill.name}
+                    </span>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
 
           {/* Marketing Skills */}
-          <div className="relative h-96 flex items-center justify-center">
-            <div className="relative w-full h-full flex flex-wrap gap-4 items-center justify-center content-center">
-              {marketingSkills.map((skill, i) => (
-                <motion.div
-                  key={skill._id}
-                  className={`${getBubbleSize(skill.size)} flex items-center justify-center text-center p-2 rounded-full border transition-all duration-300 group cursor-pointer overflow-hidden`}
-                  style={{
-                    backgroundColor: 'rgba(26, 26, 26, 0.05)',
-                    borderColor: 'rgba(26, 26, 26, 0.2)',
-                  }}
-                  variants={floatingVariants(i * 0.15, 3.5 + Math.random() * 2)}
-                  animate="animate"
-                  whileHover={{ scale: 1.1, borderColor: 'rgba(26, 26, 26, 0.5)' }}
-                >
-                  <span
-                    className="font-mono text-xs font-semibold transition-colors leading-tight"
-                    style={{ color: 'var(--foreground)', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
+          <div className="relative flex items-center justify-center" style={{ minHeight: 420 }}>
+            <div className="relative w-full flex flex-wrap gap-4 items-center justify-center content-center py-4">
+              {marketingSkills.map((skill, i) => {
+                const bubble = getBubbleSize(skill.size);
+                return (
+                  <motion.div
+                    key={skill._id}
+                    className="flex items-center justify-center text-center rounded-full border transition-all duration-300 cursor-pointer"
+                    style={{
+                      minWidth: bubble.minW,
+                      minHeight: bubble.minH,
+                      padding: '12px 10px',
+                      backgroundColor: 'rgba(26, 26, 26, 0.05)',
+                      borderColor: 'rgba(26, 26, 26, 0.2)',
+                    }}
+                    variants={floatingVariants(i * 0.15, 3.5 + Math.random() * 2)}
+                    animate="animate"
+                    whileHover={{ scale: 1.1, borderColor: 'rgba(26, 26, 26, 0.5)' }}
                   >
-                    {skill.name}
-                  </span>
-                </motion.div>
-              ))}
+                    <span
+                      className={`font-mono ${bubble.className} font-semibold transition-colors leading-tight text-center`}
+                      style={{ color: 'var(--foreground)', wordBreak: 'break-word', hyphens: 'auto' }}
+                    >
+                      {skill.name}
+                    </span>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </div>

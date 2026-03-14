@@ -87,7 +87,7 @@ export default async function ArticlePage({ params }: PageProps) {
     : '';
 
   return (
-    <div style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
+    <div dir="rtl" style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
       {/* ── Hero image + title ── */}
       <div className="relative w-full" style={{ minHeight: '55vh', maxHeight: 620, overflow: 'hidden' }}>
         {post.featuredImageUrl ? (
@@ -212,7 +212,7 @@ export default async function ArticlePage({ params }: PageProps) {
 
         {/* Main article content */}
         <article className="mb-12">
-          <ArticleContent rawHtml={post.rawHtml} />
+          <ArticleContent rawHtml={post.rawHtml} articleTitle={post.title} />
         </article>
 
         {/* Bottom CTA — same as top */}
