@@ -19,7 +19,7 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
     // Connect Lenis to GSAP's ticker for ScrollTrigger sync
     lenis.on('scroll', () => ScrollTrigger.update());
 
-    const rafCallback = (time: number, _deltaTime: number, _frame: number) => {
+    const rafCallback = (time: number) => {
       lenis.raf(time * 1000);
     };
 
