@@ -25,7 +25,6 @@ const AI_CATEGORY = 'AI Projects';
 function CaseStudyCard({ cs, i }: { cs: CaseStudy; i: number }) {
   const isAI = cs.category === AI_CATEGORY;
 
-  // All projects with a slug go directly to the magazine article page
   const href = cs.slug?.current
     ? `/magazine/${cs.slug.current}`
     : cs.link || null;
@@ -33,26 +32,30 @@ function CaseStudyCard({ cs, i }: { cs: CaseStudy; i: number }) {
   return (
     <motion.div
       key={cs._id}
-      className="flex-shrink-0 w-80 p-6 border rounded-lg transition-all duration-300 group flex flex-col"
+      className="flex-shrink-0 w-80 p-6 rounded-xl group flex flex-col relative overflow-hidden"
       style={{
-        borderColor: isAI ? 'rgba(25, 28, 112, 0.4)' : 'var(--border)',
-        backgroundColor: isAI
-          ? 'rgba(25, 28, 112, 0.06)'
-          : 'rgba(245, 243, 239, 0.3)',
+        background: isAI
+          ? 'rgba(245, 247, 255, 0.7)'
+          : 'rgba(255, 255, 255, 0.65)',
+        backdropFilter: 'blur(10px) saturate(160%)',
+        WebkitBackdropFilter: 'blur(10px) saturate(160%)',
+        border: isAI
+          ? '1px solid rgba(25, 28, 112, 0.2)'
+          : '1px solid rgba(255, 255, 255, 0.8)',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05), 0 1px 0 rgba(255,255,255,0.9) inset',
       }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 10 }}
       transition={{ delay: i * 0.04 }}
       whileHover={{
-        y: -4,
-        borderColor: isAI ? 'rgba(25, 28, 112, 0.7)' : 'rgba(196, 93, 62, 0.4)',
+        y: -6,
         boxShadow: isAI
-          ? '0 10px 30px -5px rgba(25, 28, 112, 0.15)'
-          : '0 10px 25px -5px rgba(0, 0, 0, 0.1)',
+          ? '0 16px 48px rgba(25, 28, 112, 0.12), 0 0 0 1px rgba(25, 28, 112, 0.2), 0 1px 0 rgba(255,255,255,0.9) inset'
+          : '0 16px 48px rgba(0, 0, 0, 0.09), 0 0 0 1px rgba(196, 93, 62, 0.2), 0 1px 0 rgba(255,255,255,0.9) inset',
+        background: isAI ? 'rgba(245, 247, 255, 0.85)' : 'rgba(255, 255, 255, 0.82)',
       }}
     >
-      {/* Category badge */}
       <div className="flex items-center gap-2 mb-2">
         {isAI && (
           <span
@@ -70,23 +73,15 @@ function CaseStudyCard({ cs, i }: { cs: CaseStudy; i: number }) {
           {cs.category}
         </p>
       </div>
-
-      {/* Title */}
       <h3 className="font-heading text-xl font-semibold mb-1">{cs.title}</h3>
-
-      {/* Subtitle */}
       {cs.subtitle && (
         <p className="text-sm mb-3" style={{ color: 'var(--accent)' }}>
           {cs.subtitle}
         </p>
       )}
-
-      {/* Description */}
       <p className="text-sm mb-4 leading-relaxed flex-grow" style={{ color: 'var(--muted-foreground)' }}>
         {cs.description}
       </p>
-
-      {/* Result */}
       <div
         className="p-3 rounded-md border mb-4"
         style={{
@@ -101,8 +96,6 @@ function CaseStudyCard({ cs, i }: { cs: CaseStudy; i: number }) {
           {cs.result}
         </p>
       </div>
-
-      {/* CTA Link */}
       {href && (
         <a
           href={href}
@@ -129,7 +122,6 @@ function CaseStudyCard({ cs, i }: { cs: CaseStudy; i: number }) {
 export default function CaseStudiesSection({ caseStudies }: { caseStudies: CaseStudy[] }) {
   const [selectedFilter, setSelectedFilter] = useState('All');
 
-  // Sort so AI Projects always comes first in the tab list
   const categories = useMemo(() => {
     const cats = Array.from(new Set(caseStudies.map((cs) => cs.category)));
     const sorted = cats.sort((a, b) => {
@@ -145,7 +137,6 @@ export default function CaseStudiesSection({ caseStudies }: { caseStudies: CaseS
       selectedFilter === 'All'
         ? caseStudies
         : caseStudies.filter((cs) => cs.category === selectedFilter);
-    // Within results, put AI Projects first
     return [...filtered].sort((a, b) => {
       if (a.category === AI_CATEGORY && b.category !== AI_CATEGORY) return -1;
       if (b.category === AI_CATEGORY && a.category !== AI_CATEGORY) return 1;
@@ -174,8 +165,6 @@ export default function CaseStudiesSection({ caseStudies }: { caseStudies: CaseS
             View All in Build Lab <ArrowRight size={12} />
           </Link>
         </motion.div>
-
-        {/* Filter Pills */}
         <div className="flex gap-3 mb-12 overflow-x-auto pb-4">
           {categories.map((cat) => {
             const isAICat = cat === AI_CATEGORY;
@@ -190,11 +179,7 @@ export default function CaseStudiesSection({ caseStudies }: { caseStudies: CaseS
                     ? isAICat ? '#191C70' : 'var(--accent)'
                     : 'transparent',
                   color: isActive ? 'white' : isAICat ? '#191C70' : 'var(--foreground)',
-                  border: `1px solid ${
-                    isActive
-                      ? isAICat ? '#191C70' : 'var(--accent)'
-                      : isAICat ? 'rgba(25, 28, 112, 0.4)' : 'var(--border)'
-                  }`,
+                  border: `1px solid ${isActive ? (isAICat ? '#191C70' : 'var(--accent)') : (isAICat ? 'rgba(25, 28, 112, 0.4)' : 'var(--border)')}`,
                   fontWeight: isAICat ? 600 : 400,
                 }}
               >
@@ -204,8 +189,6 @@ export default function CaseStudiesSection({ caseStudies }: { caseStudies: CaseS
             );
           })}
         </div>
-
-        {/* Case Study Cards Carousel */}
         <div className="overflow-x-auto pb-6">
           <motion.div className="flex gap-6 min-w-min" layout>
             <AnimatePresence mode="popLayout">
