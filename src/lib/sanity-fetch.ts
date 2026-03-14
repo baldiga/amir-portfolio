@@ -1,14 +1,5 @@
 import { createClient } from 'next-sanity';
 import { client } from '@/sanity/lib/client';
-
-// Dedicated no-CDN read client — bypasses Sanity CDN for always-fresh data
-// Does NOT require a token since the dataset is public
-const freshClient = createClient({
-  projectId: 'jgfn3h3h',
-  dataset: 'production',
-  apiVersion: '2024-01-01',
-  useCdn: false,
-});
 import {
   heroQuery,
   bentoCardsQuery,
@@ -30,6 +21,14 @@ import {
   fallbackCta,
   fallbackSiteSettings,
 } from './fallback-data';
+
+// Dedicated no-CDN read client — bypasses Sanity CDN for always-fresh data
+const freshClient = createClient({
+  projectId: 'jgfn3h3h',
+  dataset: 'production',
+  apiVersion: '2024-01-01',
+  useCdn: false,
+});
 
 async function safeFetch<T>(query: string, fallback: T): Promise<T> {
   try {
