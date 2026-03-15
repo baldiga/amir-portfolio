@@ -8,6 +8,7 @@ import {
   caseStudyBySlugQuery,
   experienceQuery,
   blogPostsQuery,
+  buildPostsQuery,
   blogPostBySlugQuery,
   allBlogPostSlugsQuery,
   ctaSectionQuery,
@@ -65,6 +66,7 @@ export async function getExperience() {
   return safeFetch(experienceQuery, fallbackExperience);
 }
 
+// All posts — Magazine (shows all articles regardless of section)
 export async function getBlogPosts() {
   try {
     const data = await freshClient.fetch(blogPostsQuery);
@@ -73,6 +75,18 @@ export async function getBlogPosts() {
   } catch (error) {
     console.error('Sanity fetch error [getBlogPosts]:', error);
     return fallbackBlogPosts;
+  }
+}
+
+// Build-only posts — /build page
+export async function getBuildPosts() {
+  try {
+    const data = await freshClient.fetch(buildPostsQuery);
+    if (!data || data.length === 0) return [];
+    return data;
+  } catch (error) {
+    console.error('Sanity fetch error [getBuildPosts]:', error);
+    return [];
   }
 }
 
