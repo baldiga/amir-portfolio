@@ -4,41 +4,64 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
+function PlanetIcon() {
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32, flexShrink: 0 }}>
+      <svg viewBox="0 0 32 32" width="32" height="32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="pg4" cx="38%" cy="35%" r="65%" fx="38%" fy="35%">
+            <stop offset="0%" stopColor="#E8845F" />
+            <stop offset="50%" stopColor="#C45D3E" />
+            <stop offset="100%" stopColor="#8B3A22" />
+          </radialGradient>
+        </defs>
+        {/* Planet */}
+        <circle cx="16" cy="16" r="9" fill="url(#pg4)" />
+        {/* Orbit ring */}
+        <ellipse cx="16" cy="16" rx="15" ry="4.2"
+          fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1"
+          transform="rotate(-10 16 16)" />
+        {/* Orbiting dots */}
+        <circle cx="2.5" cy="17.5" r="1.9" fill="#C45D3E" />
+        <circle cx="27" cy="13.5" r="1.4" fill="#C45D3E" />
+        <circle cx="22" cy="22" r="1.6" fill="#E8845F" />
+      </svg>
+    </span>
+  );
+}
+
 function AmirLogo() {
   return (
-    <svg
-      viewBox="0 0 260 44"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      style={{ height: 34, width: 'auto', overflow: 'visible' }}
-      aria-label="Amir Baldiga"
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 2,
+        color: 'white',
+        fontFamily: 'Sora, Inter, sans-serif',
+        fontWeight: 700,
+        fontSize: 19,
+        letterSpacing: '-0.3px',
+        lineHeight: 1,
+        whiteSpace: 'nowrap',
+      }}
     >
-      <defs>
-        <radialGradient id="pg3" cx="38%" cy="35%" r="65%" fx="38%" fy="35%">
-          <stop offset="0%" stopColor="#E8845F" />
-          <stop offset="50%" stopColor="#C45D3E" />
-          <stop offset="100%" stopColor="#8B3A22" />
-        </radialGradient>
-      </defs>
-
-      {/* "Amir" */}
-      <text x="0" y="31" fontFamily="Sora, Inter, sans-serif" fontWeight="700" fontSize="28" fill="white" letterSpacing="-0.4">Amir</text>
-
-      {/* Planet — sits between the words */}
-      <circle cx="96" cy="15" r="9.5" fill="url(#pg3)" />
-      <ellipse cx="96" cy="15" rx="17" ry="4.6"
-        fill="none" stroke="rgba(255,255,255,0.48)" strokeWidth="1.1"
-        transform="rotate(-10 96 15)" />
-      <circle cx="81" cy="17.5" r="2.3" fill="#C45D3E" />
-      <circle cx="109" cy="12" r="1.6" fill="#C45D3E" />
-      <circle cx="102" cy="21" r="1.9" fill="#E8845F" />
-
-      {/* "Baldiga" */}
-      <text x="112" y="31" fontFamily="Sora, Inter, sans-serif" fontWeight="700" fontSize="28" fill="white" letterSpacing="-0.4">Baldiga</text>
-
-      {/* Orange dash under B */}
-      <rect x="112" y="36" width="16" height="3" rx="1.5" fill="#C45D3E" />
-    </svg>
+      <span>Amir</span>
+      <PlanetIcon />
+      <span style={{ position: 'relative' }}>
+        Baldiga
+        <span style={{
+          position: 'absolute',
+          bottom: -5,
+          left: 0,
+          width: 15,
+          height: 3,
+          borderRadius: 2,
+          backgroundColor: '#C45D3E',
+          display: 'block',
+        }} />
+      </span>
+    </span>
   );
 }
 
