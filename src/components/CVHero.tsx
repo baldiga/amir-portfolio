@@ -22,16 +22,16 @@ export default function CVHero() {
       const dy = (e.clientY - cy) / rect.height;
 
       if (photoRef.current) {
-        photoRef.current.style.transform = `translateX(-50%) translate(${dx * 18}px, ${dy * 12}px)`;
+        photoRef.current.style.transform = `translateX(-50%) translate(${dx * 18}px, ${dy * 10}px)`;
       }
       if (orbitRef.current) {
-        orbitRef.current.style.transform = `translate(-50%, -46%) translate(${dx * -10}px, ${dy * -8}px) rotate(${dx * 6}deg)`;
+        orbitRef.current.style.transform = `translate(-50%, -44%) translate(${dx * -12}px, ${dy * -8}px) rotate(${dx * 5}deg)`;
       }
     };
 
     const handleMouseLeave = () => {
       if (photoRef.current) photoRef.current.style.transform = 'translateX(-50%) translate(0,0)';
-      if (orbitRef.current) orbitRef.current.style.transform = 'translate(-50%, -46%) translate(0,0) rotate(0deg)';
+      if (orbitRef.current) orbitRef.current.style.transform = 'translate(-50%, -44%) translate(0,0) rotate(0deg)';
     };
 
     section.addEventListener('mousemove', handleMouseMove);
@@ -54,111 +54,109 @@ export default function CVHero() {
   return (
     <section
       ref={sectionRef}
-      className="min-h-screen flex items-center pt-28 pb-16 relative overflow-hidden"
+      className="min-h-screen flex items-center pt-20 pb-0 relative overflow-hidden"
       style={{ backgroundColor: 'var(--background)' }}
     >
-      <div className="max-w-7xl mx-auto px-6 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div className="w-full max-w-7xl mx-auto px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 items-end gap-0">
 
-          {/* LEFT: Photo + Planet */}
+          {/* LEFT: Photo + Planet — full height, bleeds to bottom */}
           <motion.div
-            className="relative flex justify-center order-2 lg:order-1"
-            initial={{ opacity: 0, x: -40 }}
+            className="relative order-2 lg:order-1 flex justify-center"
+            style={{ minHeight: '80vh' }}
+            initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] }}
           >
-            <div className="relative" style={{ width: 420, height: 520 }}>
-
-              {/* Planet orbital system */}
+            {/* Planet orbital system */}
+            <div
+              ref={orbitRef}
+              style={{
+                position: 'absolute',
+                width: 420,
+                height: 420,
+                top: '44%',
+                left: '50%',
+                transform: 'translate(-50%, -44%)',
+                transition: 'transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94)',
+                zIndex: 0,
+              }}
+            >
+              {/* Orange planet sphere */}
               <div
-                ref={orbitRef}
                 style={{
                   position: 'absolute',
-                  width: 360,
-                  height: 360,
                   top: '50%',
                   left: '50%',
-                  transform: 'translate(-50%, -46%)',
-                  transition: 'transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94)',
-                  zIndex: 0,
+                  transform: 'translate(-50%, -50%)',
+                  width: 280,
+                  height: 280,
+                  borderRadius: '50%',
+                  background: 'radial-gradient(circle at 38% 35%, #E8845F 0%, #C45D3E 45%, #8B3A22 100%)',
+                  boxShadow: '0 0 100px rgba(196,93,62,0.2), inset -30px -20px 60px rgba(0,0,0,0.28)',
                 }}
+              />
+
+              {/* Orbital ring SVG */}
+              <svg
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible' }}
+                viewBox="0 0 420 420"
               >
-                {/* Orange planet sphere */}
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    width: 240,
-                    height: 240,
-                    borderRadius: '50%',
-                    background: 'radial-gradient(circle at 38% 35%, #E8845F 0%, #C45D3E 45%, #8B3A22 100%)',
-                    boxShadow: '0 0 80px rgba(196,93,62,0.22), inset -28px -18px 55px rgba(0,0,0,0.28)',
-                  }}
+                <ellipse cx="210" cy="210" rx="196" ry="52"
+                  fill="none" stroke="rgba(26,26,26,0.45)" strokeWidth="1.5"
+                  style={{ transform: 'rotate(-8deg)', transformOrigin: '210px 210px' }}
                 />
+                <path d="M 14 210 A 196 52 0 0 0 406 210"
+                  fill="none" stroke="rgba(26,26,26,0.65)" strokeWidth="1.5"
+                  style={{ transform: 'rotate(-8deg)', transformOrigin: '210px 210px' }}
+                />
+              </svg>
 
-                {/* Orbital ring SVG */}
-                <svg
-                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible' }}
-                  viewBox="0 0 360 360"
-                >
-                  <ellipse cx="180" cy="180" rx="168" ry="44"
-                    fill="none" stroke="rgba(26,26,26,0.5)" strokeWidth="1.5"
-                    style={{ transform: 'rotate(-8deg)', transformOrigin: '180px 180px' }}
-                  />
-                  <path d="M 12 180 A 168 44 0 0 0 348 180"
-                    fill="none" stroke="rgba(26,26,26,0.7)" strokeWidth="1.5"
-                    style={{ transform: 'rotate(-8deg)', transformOrigin: '180px 180px' }}
-                  />
-                </svg>
+              {/* Orbiting dots */}
+              <style>{`
+                @keyframes orb1cv { from { transform: rotate(-8deg) translateX(196px) rotate(8deg); } to { transform: rotate(352deg) translateX(196px) rotate(-352deg); } }
+                @keyframes orb2cv { from { transform: rotate(188deg) translateX(196px) rotate(-188deg); } to { transform: rotate(548deg) translateX(196px) rotate(-548deg); } }
+                @keyframes orb3cv { from { transform: rotate(98deg) translateX(150px) rotate(-98deg); } to { transform: rotate(458deg) translateX(150px) rotate(-458deg); } }
+                .orb-cv { position: absolute; border-radius: 50%; top: 50%; left: 50%; }
+                .orb-cv-1 { width: 16px; height: 16px; margin: -8px; background: #C45D3E; box-shadow: 0 0 16px #C45D3E99; animation: orb1cv 6s linear infinite; }
+                .orb-cv-2 { width: 11px; height: 11px; margin: -5.5px; background: #C45D3E; box-shadow: 0 0 11px #C45D3E99; animation: orb2cv 6s linear infinite; }
+                .orb-cv-3 { width: 8px; height: 8px; margin: -4px; background: #E8845F; box-shadow: 0 0 9px #E8845F99; animation: orb3cv 9s linear infinite; }
+              `}</style>
+              <div className="orb-cv orb-cv-1" />
+              <div className="orb-cv orb-cv-2" />
+              <div className="orb-cv orb-cv-3" />
+            </div>
 
-                {/* Orbiting dots */}
-                <style>{`
-                  @keyframes orb1 { from { transform: rotate(-8deg) translateX(168px) rotate(8deg); } to { transform: rotate(352deg) translateX(168px) rotate(-352deg); } }
-                  @keyframes orb2 { from { transform: rotate(188deg) translateX(168px) rotate(-188deg); } to { transform: rotate(548deg) translateX(168px) rotate(-548deg); } }
-                  @keyframes orb3 { from { transform: rotate(98deg) translateX(130px) rotate(-98deg); } to { transform: rotate(458deg) translateX(130px) rotate(-458deg); } }
-                  .orb-dot { position: absolute; border-radius: 50%; top: 50%; left: 50%; }
-                  .orb-dot-1 { width: 14px; height: 14px; margin: -7px; background: #C45D3E; box-shadow: 0 0 14px #C45D3E99; animation: orb1 6s linear infinite; }
-                  .orb-dot-2 { width: 10px; height: 10px; margin: -5px; background: #C45D3E; box-shadow: 0 0 10px #C45D3E99; animation: orb2 6s linear infinite; }
-                  .orb-dot-3 { width: 7px; height: 7px; margin: -3.5px; background: #E8845F; box-shadow: 0 0 8px #E8845F99; animation: orb3 9s linear infinite; }
-                `}</style>
-                <div className="orb-dot orb-dot-1" />
-                <div className="orb-dot orb-dot-2" />
-                <div className="orb-dot orb-dot-3" />
-              </div>
-
-              {/* B&W Photo */}
-              <div
-                ref={photoRef}
+            {/* B&W Photo — anchored to bottom, tall */}
+            <div
+              ref={photoRef}
+              style={{
+                position: 'absolute',
+                bottom: 0,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '75%',
+                maxWidth: 480,
+                zIndex: 2,
+                transition: 'transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94)',
+              }}
+            >
+              <img
+                src="https://amirbaldiga.com/wp-content/uploads/2024/03/Josef-15-1-671x1024.png"
+                alt="Amir Baldiga"
                 style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: 300,
-                  zIndex: 2,
-                  transition: 'transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94)',
+                  width: '100%',
+                  display: 'block',
+                  filter: 'grayscale(100%) contrast(1.05)',
+                  objectFit: 'cover',
                 }}
-              >
-                <img
-                  src="https://amirbaldiga.com/wp-content/uploads/2024/03/Josef-15-1-671x1024.png"
-                  alt="Amir Baldiga"
-                  style={{
-                    width: '100%',
-                    display: 'block',
-                    filter: 'grayscale(100%) contrast(1.05)',
-                    objectFit: 'cover',
-                  }}
-                />
-              </div>
-
+              />
             </div>
           </motion.div>
 
-          {/* RIGHT: Text */}
+          {/* RIGHT: Text — vertically centered */}
           <motion.div
-            className="order-1 lg:order-2"
+            className="order-1 lg:order-2 pb-16 lg:pb-24"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -179,7 +177,7 @@ export default function CVHero() {
             <motion.h1
               variants={itemVariants}
               className="font-heading font-bold leading-tight mb-6"
-              style={{ fontSize: 'clamp(2.8rem, 5vw, 4.5rem)', lineHeight: 1.08, letterSpacing: '-0.02em' }}
+              style={{ fontSize: 'clamp(3rem, 5.5vw, 5rem)', lineHeight: 1.06, letterSpacing: '-0.02em' }}
             >
               I&apos;m Amir<br />
               <span style={{ color: 'var(--accent)' }}>Baldiga.</span>
@@ -224,12 +222,8 @@ export default function CVHero() {
                 { label: 'Course graduates', value: '7K+' },
               ].map((stat) => (
                 <div key={stat.label}>
-                  <p className="font-heading font-bold text-2xl" style={{ color: 'var(--foreground)' }}>
-                    {stat.value}
-                  </p>
-                  <p className="text-xs font-mono uppercase tracking-wider mt-0.5" style={{ color: 'var(--muted-foreground)' }}>
-                    {stat.label}
-                  </p>
+                  <p className="font-heading font-bold text-2xl" style={{ color: 'var(--foreground)' }}>{stat.value}</p>
+                  <p className="text-xs font-mono uppercase tracking-wider mt-0.5" style={{ color: 'var(--muted-foreground)' }}>{stat.label}</p>
                 </div>
               ))}
             </motion.div>
@@ -237,11 +231,6 @@ export default function CVHero() {
 
         </div>
       </div>
-
-      <div
-        className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
-        style={{ background: 'linear-gradient(to bottom, transparent, var(--background))', zIndex: 3 }}
-      />
     </section>
   );
 }
