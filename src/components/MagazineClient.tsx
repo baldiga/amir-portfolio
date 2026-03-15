@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, ArrowRight, Bot } from 'lucide-react';
+import { Clock, ArrowRight, Bot, Hammer } from 'lucide-react';
 
 interface Post {
   _id: string;
@@ -12,6 +12,7 @@ interface Post {
   excerpt?: string;
   featuredImageUrl?: string;
   category?: string;
+  section?: 'build' | 'magazine';
   featured?: boolean;
   slug?: { current: string };
   publishedAt?: string;
@@ -22,6 +23,7 @@ interface Post {
 function PostCard({ post, index, featured }: { post: Post; index: number; featured?: boolean }) {
   const href = `/magazine/${post.slug?.current}`;
   const isAI = post.category === 'AI Projects';
+  const isBuild = post.section === 'build';
   const date = post.publishedAt
     ? new Date(post.publishedAt).toLocaleDateString('he-IL', { month: 'short', day: 'numeric', year: 'numeric' })
     : '';
@@ -56,6 +58,14 @@ function PostCard({ post, index, featured }: { post: Post; index: number; featur
 
             <div className="absolute inset-0 flex flex-col justify-end p-8">
               <div className="flex items-center gap-3 mb-3">
+                {isBuild && (
+                  <span
+                    className="font-mono text-xs uppercase tracking-widest px-3 py-1 rounded-full flex items-center gap-1"
+                    style={{ backgroundColor: 'rgba(221,153,51,0.25)', color: '#DD9933', border: '1px solid rgba(221,153,51,0.4)', backdropFilter: 'blur(8px)' }}
+                  >
+                    <Hammer size={10} /> Build
+                  </span>
+                )}
                 <span
                   className="font-mono text-xs uppercase tracking-widest px-3 py-1 rounded-full"
                   style={{ backgroundColor: 'rgba(255,255,255,0.12)', color: '#fff', backdropFilter: 'blur(8px)' }}
@@ -125,13 +135,33 @@ function PostCard({ post, index, featured }: { post: Post; index: number; featur
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                 sizes="(max-width: 640px) 100vw, 33vw"
               />
+              {isBuild && (
+                <div
+                  className="absolute top-3 right-3 font-mono text-xs px-2 py-1 rounded-full flex items-center gap-1"
+                  style={{ backgroundColor: 'rgba(221,153,51,0.9)', color: '#fff', backdropFilter: 'blur(4px)' }}
+                >
+                  <Hammer size={9} /> Build
+                </div>
+              )}
             </div>
           ) : (
             <div
-              className="flex items-center justify-center"
-              style={{ height: 200, background: 'linear-gradient(135deg, rgba(25,28,112,0.08), rgba(25,28,112,0.15))' }}
+              className="relative flex items-center justify-center"
+              style={{ height: 200, background: isBuild ? 'linear-gradient(135deg, rgba(221,153,51,0.1), rgba(221,153,51,0.2))' : 'linear-gradient(135deg, rgba(25,28,112,0.08), rgba(25,28,112,0.15))' }}
             >
-              {isAI && <Bot size={40} style={{ color: 'rgba(25,28,112,0.3)' }} />}
+              {isBuild ? (
+                <Hammer size={40} style={{ color: 'rgba(221,153,51,0.4)' }} />
+              ) : isAI ? (
+                <Bot size={40} style={{ color: 'rgba(25,28,112,0.3)' }} />
+              ) : null}
+              {isBuild && (
+                <div
+                  className="absolute top-3 right-3 font-mono text-xs px-2 py-1 rounded-full flex items-center gap-1"
+                  style={{ backgroundColor: 'rgba(221,153,51,0.2)', color: '#DD9933', border: '1px solid rgba(221,153,51,0.3)' }}
+                >
+                  <Hammer size={9} /> Build
+                </div>
+              )}
             </div>
           )}
 
@@ -140,7 +170,7 @@ function PostCard({ post, index, featured }: { post: Post; index: number; featur
             <div className="flex items-center gap-2 mb-3">
               <span
                 className="font-mono text-[10px] uppercase tracking-wider"
-                style={{ color: isAI ? '#191C70' : 'var(--accent)' }}
+                style={{ color: isBuild ? '#DD9933' : isAI ? '#191C70' : 'var(--accent)' }}
               >
                 {post.category}
               </span>
@@ -160,7 +190,7 @@ function PostCard({ post, index, featured }: { post: Post; index: number; featur
             )}
             <span
               className="inline-flex items-center gap-1.5 font-mono text-xs font-medium mt-auto transition-all duration-200 group-hover:gap-2"
-              style={{ color: '#191C70' }}
+              style={{ color: isBuild ? '#DD9933' : '#191C70' }}
             >
               קרא עוד <ArrowRight size={12} />
             </span>
@@ -171,21 +201,39 @@ function PostCard({ post, index, featured }: { post: Post; index: number; featur
   );
 }
 
-export default function MagazineClient({ posts }: { posts: Post[] }) {
-  const [selectedCategory, setSelectedCategory] = useState('הכל');
+interface MagazineClientProps {
+  posts: Post[];
+  pageTitle?: string;
+  pageDescription?: string;
+}
 
-  const categories = useMemo(() => {
+export default function MagazineClient({ posts, pageTitle, pageDescription }: MagazineClientProps) {
+  const [selectedFilter, setSelectedFilter] = useState('הכל');
+
+  // Section filters always at the top
+  const sectionFilters = [
+    { label: 'הכל', value: 'הכל' },
+    { label: '🔨 Build', value: 'build' },
+    { label: '📰 Magazine', value: 'magazine' },
+  ];
+
+  // Category filters derived from posts
+  const categoryFilters = useMemo(() => {
     const cats = Array.from(new Set(posts.map((p) => p.category).filter((c): c is string => Boolean(c))));
-    return ['הכל', ...cats];
+    return cats;
   }, [posts]);
 
   const filtered = useMemo(() => {
-    if (selectedCategory === 'הכל') return posts;
-    return posts.filter((p) => p.category === selectedCategory);
-  }, [posts, selectedCategory]);
+    if (selectedFilter === 'הכל') return posts;
+    if (selectedFilter === 'build') return posts.filter((p) => p.section === 'build');
+    if (selectedFilter === 'magazine') return posts.filter((p) => p.section === 'magazine');
+    return posts.filter((p) => p.category === selectedFilter);
+  }, [posts, selectedFilter]);
 
   const featuredPost = filtered.find((p) => p.featured);
   const restPosts = filtered.filter((p) => !p.featured || filtered.indexOf(p) > 0);
+
+  const isBuildPage = pageTitle === 'Build';
 
   return (
     <div style={{ backgroundColor: 'var(--background)', color: 'var(--foreground)', direction: 'rtl' }}>
@@ -194,18 +242,18 @@ export default function MagazineClient({ posts }: { posts: Post[] }) {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <span
             className="font-mono text-xs uppercase tracking-widest mb-4 inline-block"
-            style={{ color: 'var(--accent)' }}
+            style={{ color: isBuildPage ? '#DD9933' : 'var(--accent)' }}
           >
-            Magazine
+            {pageTitle || 'Magazine'}
           </span>
           <h1
             className="font-heading font-bold mb-4"
             style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', letterSpacing: '-0.03em' }}
           >
-            מאמרים ותובנות
+            {isBuildPage ? 'פרויקטי AI & Build' : 'מאמרים ותובנות'}
           </h1>
           <p className="text-lg max-w-xl" style={{ color: 'var(--muted-foreground)', lineHeight: 1.7 }}>
-            מדריכים מעמיקים על AI שיווקי, אוטומציה, כלים לעסקים ואסטרטגיה B2B — מניסיון ישיר מהשטח.
+            {pageDescription || 'מדריכים מעמיקים על AI שיווקי, אוטומציה, כלים לעסקים ואסטרטגיה B2B — מניסיון ישיר מהשטח.'}
           </p>
         </motion.div>
       </section>
@@ -213,13 +261,40 @@ export default function MagazineClient({ posts }: { posts: Post[] }) {
       {/* ── Filters ── */}
       <section className="max-w-7xl mx-auto px-6 pb-8">
         <div className="flex gap-3 flex-wrap">
-          {categories.map((cat) => {
-            const isActive = selectedCategory === cat;
+          {/* Section filters */}
+          {!isBuildPage && sectionFilters.map(({ label, value }) => {
+            const isActive = selectedFilter === value;
+            const isBuildFilter = value === 'build';
+            return (
+              <button
+                key={value}
+                onClick={() => setSelectedFilter(value)}
+                className="font-mono text-xs px-5 py-2 rounded-full whitespace-nowrap transition-all duration-300"
+                style={{
+                  backgroundColor: isActive ? (isBuildFilter ? '#DD9933' : 'var(--accent)') : 'transparent',
+                  color: isActive ? '#fff' : isBuildFilter ? '#DD9933' : 'var(--foreground)',
+                  border: `1px solid ${isActive ? (isBuildFilter ? '#DD9933' : 'var(--accent)') : isBuildFilter ? 'rgba(221,153,51,0.4)' : 'var(--border)'}`,
+                  fontWeight: isActive ? 600 : 400,
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
+
+          {/* Divider */}
+          {!isBuildPage && categoryFilters.length > 0 && (
+            <div className="flex items-center" style={{ color: 'var(--border)' }}>|</div>
+          )}
+
+          {/* Category filters */}
+          {categoryFilters.map((cat) => {
+            const isActive = selectedFilter === cat;
             const isAICat = cat === 'AI Projects';
             return (
               <button
                 key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => setSelectedFilter(cat)}
                 className="font-mono text-xs px-5 py-2 rounded-full whitespace-nowrap transition-all duration-300 flex items-center gap-1.5"
                 style={{
                   backgroundColor: isActive ? (isAICat ? '#191C70' : 'var(--accent)') : 'transparent',
@@ -256,7 +331,7 @@ export default function MagazineClient({ posts }: { posts: Post[] }) {
 
           {filtered.length === 0 && (
             <div className="col-span-12 text-center py-20" style={{ color: 'var(--muted-foreground)' }}>
-              <p>אין מאמרים בקטגוריה זו עדיין.</p>
+              <p>אין מאמרים בסינון זה עדיין.</p>
             </div>
           )}
         </div>
