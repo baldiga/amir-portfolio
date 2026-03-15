@@ -1,14 +1,20 @@
-import { getCaseStudies } from '@/lib/sanity-fetch';
-import BuildPageClient from '@/components/BuildPageClient';
+import { getBuildPosts } from '@/lib/sanity-fetch';
+import MagazineClient from '@/components/MagazineClient';
 
 export const revalidate = 0;
 
 export const metadata = {
-  title: 'Build Lab — Amir Baldiga',
-  description: 'AI-powered tools, marketing systems, and automation projects by Amir Baldiga.',
+  title: 'Build — Amir Baldiga',
+  description: 'פרויקטי AI, כלים ואוטומציות שבניתי מ-Zero ל-Production.',
 };
 
 export default async function BuildPage() {
-  const caseStudies = await getCaseStudies();
-  return <BuildPageClient caseStudies={caseStudies} />;
+  const posts = await getBuildPosts();
+  return (
+    <MagazineClient
+      posts={posts}
+      pageTitle="Build"
+      pageDescription="פרויקטי AI, כלים ואוטומציות שבניתי מ-Zero ל-Production."
+    />
+  );
 }
