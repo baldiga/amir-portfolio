@@ -71,6 +71,7 @@ export const experienceQuery = groq`*[_type == "experience"] | order(order asc){
   order
 }`;
 
+// All posts — Magazine page (shows every article regardless of section)
 export const blogPostsQuery = groq`*[_type == "blogPost"] | order(publishedAt desc){
   _id,
   title,
@@ -78,6 +79,24 @@ export const blogPostsQuery = groq`*[_type == "blogPost"] | order(publishedAt de
   featuredImageUrl,
   image,
   category,
+  section,
+  featured,
+  slug,
+  publishedAt,
+  readingTime,
+  tags,
+  order
+}`;
+
+// Build-only posts — /build page
+export const buildPostsQuery = groq`*[_type == "blogPost" && section == "build"] | order(publishedAt desc){
+  _id,
+  title,
+  excerpt,
+  featuredImageUrl,
+  image,
+  category,
+  section,
   featured,
   slug,
   publishedAt,
@@ -93,6 +112,7 @@ export const blogPostBySlugQuery = groq`*[_type == "blogPost" && slug.current ==
   featuredImageUrl,
   image,
   category,
+  section,
   featured,
   slug,
   wpSlug,
